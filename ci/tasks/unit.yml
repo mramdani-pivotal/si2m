@@ -11,8 +11,11 @@ params:
   MAVEN_OPTS:
   MAVEN_CONFIG:
 
+inputs: 
+  - name: app
+
 run:
-  path: mvnw
+  path: ./mvnw
   args: [
     clean,
     test
