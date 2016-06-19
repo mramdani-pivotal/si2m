@@ -13,8 +13,9 @@ params:
 
 inputs:
   - name: app
-# outputs:
-#   - name: build
+outputs:
+  - name: built
+    path: app/target
 
 run:
   path: ./mvnw
