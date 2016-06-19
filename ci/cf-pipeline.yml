@@ -17,6 +17,7 @@ resources:
 
 jobs:
 - name: unit-test
+  serial: true
   public: true
   plan:
     - get: app
@@ -28,6 +29,7 @@ jobs:
         MAVEN_CONFIG: {{maven-config}}
 
 - name: build
+  serial: true
   public: true
   plan:
     - get: app

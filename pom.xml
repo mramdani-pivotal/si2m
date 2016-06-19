@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.gopivotal.pcf.sme.ers</groupId>
-	<artifactId>pcf-ers-demo1</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>pcf-ers-demo</artifactId>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>pcf-ers-demo1</name>
