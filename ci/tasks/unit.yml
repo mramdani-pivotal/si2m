@@ -14,18 +14,9 @@ params:
 inputs:
   - name: app
 
-# run:
-#   path: sh
-#   args:
-#   - -exc
-#   - |
-#     whoami
-#     env
-#     find .
-
 run:
  path: ./mvnw
- dir: app
+ dir: app # mvnw requires working directory to be correct
  args: [
    clean,
    test
