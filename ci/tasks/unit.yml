@@ -21,7 +21,6 @@ run:
   - |
     whoami
     env
-    go version
     find .
 
 #run:
