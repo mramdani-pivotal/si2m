@@ -1,0 +1,51 @@
+---
+resources:
+- name: app
+  type: git
+  source:
+    uri: https://github.com/avasseur-pivotal/pcf-ers-demo.git
+
+- name: cf
+  type: cf
+  source:
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
+    skip_cert_check: true
+
+jobs:
+- name: unit-test
+  public: true
+  plan:
+    - get: app
+      trigger: true # TODO time based
+    - task: unit
+      file: app/ci/tasks/unit.yml
+      params: &MAVENPARAMS
+        MAVEN_OPTS: {{maven-opts}}
+        MAVEN_CONFIG: {{maven-config}}
+
+- name: build
+  public: true
+  plan:
+    - get: app
+      passed: [ unit-test ]
+      #trigger: true # TODO time based
+    - task: build
+      file: app/ci/tasks/build.yml
+      params:
+        <<: *MAVENPARAMS
+
+- name: deploy
+  serial: true
+  plan:
+  - get: app
+    #trigger: true
+    passed: [ unit-test, build ]
+  - put: cf
+    params:
+      manifest: app/manifest.yml
+      path: app/target/pcf-ers-demo-1.0.jar
+      current_app_name: attendees-concourse
