@@ -24,7 +24,8 @@ inputs:
 #     find .
 
 run:
- path: app/mvnw
+ path: mvnw
+ dir: app
  args: [
    clean,
    test
