@@ -32,7 +32,7 @@ jobs:
   plan:
     - get: app
       passed: [ unit-test ]
-      #trigger: true # TODO time based
+      trigger: true # TODO time based
     - task: build
       file: app/ci/tasks/build.yml
       params:
@@ -42,7 +42,7 @@ jobs:
   serial: true
   plan:
   - get: app
-    #trigger: true
+    trigger: true
     passed: [ unit-test, build ]
   - put: cf
     params:
