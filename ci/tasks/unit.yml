@@ -15,8 +15,8 @@ inputs:
   - name: app
 
 run:
-  path: ./mvnw
-  args: [
-    clean,
-    test
-  ]
+  path: find . #./mvnw
+#  args: [
+#    clean,
+#    test
+#  ]
