@@ -1,4 +1,6 @@
 #!/bin/sh
+set -x
+
 find .
 cd app
 find .
