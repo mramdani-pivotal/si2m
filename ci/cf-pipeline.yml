@@ -28,26 +28,31 @@ jobs:
         MAVEN_OPTS: {{maven-opts}}
         MAVEN_CONFIG: {{maven-config}}
 
-- name: build
-  serial: true
-  public: true
-  plan:
-    - get: app
-      passed: [ unit-test ]
-      trigger: true # TODO time based
-    - task: build
-      file: app/ci/tasks/build.yml
-      params:
-        <<: *MAVENPARAMS
+# - name: build
+#   serial: true
+#   public: true
+#   plan:
+#     - get: app
+#       passed: [ unit-test ]
+#       trigger: true # TODO time based
+#     - task: build
+#       file: app/ci/tasks/build.yml
+#       params:
+#         <<: *MAVENPARAMS
 
 - name: deploy
   serial: true
+  public: false
   plan:
   - get: app
     trigger: true
-    passed: [ unit-test, build ]
+    passed: [ unit-test ]
+  - task: build
+    file: app/ci/tasks/build.yml
+    params:
+      <<: *MAVENPARAMS
   - put: cf
     params:
       manifest: app/manifest.yml
-      path: app/target/pcf-ers-demo-1.0.jar
+      path: build/pcf-ers-demo-1.0.jar
       current_app_name: attendees-concourse
