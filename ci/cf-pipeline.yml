@@ -28,21 +28,9 @@ jobs:
         MAVEN_OPTS: {{maven-opts}}
         MAVEN_CONFIG: {{maven-config}}
 
-# - name: build
-#   serial: true
-#   public: true
-#   plan:
-#     - get: app
-#       passed: [ unit-test ]
-#       trigger: true # TODO time based
-#     - task: build
-#       file: app/ci/tasks/build.yml
-#       params:
-#         <<: *MAVENPARAMS
-
 - name: deploy
   serial: true
-  public: false
+  public: true # cf does not shows auth. logs so it is ok
   plan:
   - get: app
     trigger: true
@@ -55,4 +43,21 @@ jobs:
     params:
       manifest: app/manifest.yml
       path: build/pcf-ers-demo-1.0.jar
+      current_app_name: attendees-concourse
+
+- name: deploy-v2
+  serial: true
+  public: true # cf does not shows auth. logs so it is ok
+  plan:
+  - get: app
+    trigger: true
+    passed: [ unit-test ]
+  - task: build
+    file: app/ci/tasks/buildv2.yml
+    params:
+      <<: *MAVENPARAMS
+  - put: cf
+    params:
+      manifest: app/manifest.yml
+      path: build/pcf-ers-demo-2.0.jar
       current_app_name: attendees-concourse
