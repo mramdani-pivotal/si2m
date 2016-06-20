@@ -1,8 +1,8 @@
-#!/bin/sh
-set -x
+#!/bin/bash
+set -e -x
 
-find .
-cd app
-find .
-./buildv2.sh
-mv target/*.jar ../build/
+pushd app
+  ./buildv2.sh
+  mv target/*.jar ../build/
+popd
+
