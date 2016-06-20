@@ -14,14 +14,10 @@ params:
 inputs:
   - name: app
 outputs:
-  - name: built
-    path: app/target
+  - name: build
 
 run:
-  path: ./mvnw
-  dir: app
+  path: sh
   args: [
-     clean,
-     package,
-     -DskipTests
+     app/ci/tasks/build.sh
   ]
