@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 set -e -x
-
-cd app && ./buildv2.sh
-cd app && mv target/*.jar ../build/
+export PATH=.:$PATH
+cd app
+./buildv2.sh
+mv target/*.jar ../build/
 
