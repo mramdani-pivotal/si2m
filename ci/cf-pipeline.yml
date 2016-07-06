@@ -1,5 +1,11 @@
 ---
 resources:
+- name: at-night
+  type: time
+  source:
+    start: 4:00 AM +0200
+    stop: 5:00 AM +0200
+
 - name: app
   type: git
   source:
@@ -32,6 +38,8 @@ jobs:
   serial: true
   public: true # cf does not shows auth. logs so it is ok
   plan:
+  - get: at-night
+    trigger: true
   - get: app
     trigger: true
     passed: [ unit-test ]
@@ -50,14 +58,14 @@ jobs:
   public: true # cf does not shows auth. logs so it is ok
   plan:
   - get: app
-    trigger: true
-    passed: [ unit-test ]
+    #trigger: true
+    #passed: [ unit-test ]
   - task: build
     file: app/ci/tasks/buildv2.yml
     params:
       <<: *MAVENPARAMS
   - put: cf
     params:
-      manifest: app/manifest.yml
+      manifest: app/manifest-v2.yml
       path: build/pcf-ers-demo-2.0.jar
-      current_app_name: attendees-concourse
+      current_app_name: attendees-concourse-v2
