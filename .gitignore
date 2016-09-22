@@ -1,4 +1,4 @@
-ci/credentials.yml
+ci*/credentials.yml
 /**/**/.DS_Store
 /target/
 .factorypath

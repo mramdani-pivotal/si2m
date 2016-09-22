@@ -29,6 +29,13 @@ resources:
     username: avasseur
     password: {{docker-password}}
 
+- name: git
+  type: github-release
+  source:
+    user: avasseur-pivotal
+    repository: pcf-ers-demo 
+    access_token: {{git-token}}
+
 jobs:
 - name: unit-test
   serial: true
@@ -53,9 +60,11 @@ jobs:
     file: app/cidocker/tasks/build.yml
     params:
       <<: *MAVENPARAMS
-  - put: docker
+  - put: git
     params:
-      build: app
+      name: build/gitname
+      tag: build/gittag
+      globs: build/*
 
 - name: docker push
   serial: true
