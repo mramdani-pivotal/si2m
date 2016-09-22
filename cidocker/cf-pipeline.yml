@@ -60,11 +60,11 @@ jobs:
     file: app/cidocker/tasks/build.yml
     params:
       <<: *MAVENPARAMS
-  - put: git
-    params:
-      name: build/gitname
-      tag: build/gittag
-      globs: build/*
+#  - put: git
+#    params:
+#      name: build/gitname
+#      tag: build/gittag
+#      globs: build/*
 
 - name: docker push
   serial: true
@@ -75,7 +75,5 @@ jobs:
     passed: [ build ]
   - put: docker
     params:
-      build: app
-      build_args:
-        build
+      build: app/cidocker/release
 
