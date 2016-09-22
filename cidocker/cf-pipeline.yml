@@ -1,0 +1,72 @@
+---
+resources:
+- name: at-night
+  type: time
+  source:
+    start: 4:00 AM +0200
+    stop: 5:00 AM +0200
+
+- name: app
+  type: git
+  source:
+    uri: https://github.com/avasseur-pivotal/pcf-ers-demo.git
+    branch: docker
+
+- name: cf
+  type: cf
+  source:
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
+    skip_cert_check: true
+
+- name: docker
+  type: docker-image
+  source:
+    repository: avasseur/cfs
+    username: avasseur
+    password: {{docker-password}}
+
+jobs:
+- name: unit-test
+  serial: true
+  public: true
+  plan:
+    - get: app
+      trigger: true # TODO time based
+    - task: unit
+      file: app/cidocker/tasks/unit.yml
+      params: &MAVENPARAMS
+        MAVEN_OPTS: {{maven-opts}}
+        MAVEN_CONFIG: {{maven-config}}
+
+- name: build
+  serial: true
+  public: true # cf does not shows auth. logs so it is ok
+  plan:
+  - get: app
+    trigger: true
+    passed: [ unit-test ]
+  - task: build
+    file: app/cidocker/tasks/build.yml
+    params:
+      <<: *MAVENPARAMS
+  - put: docker
+    params:
+      build: app
+
+- name: docker push
+  serial: true
+  public: true
+  plan:
+  - get: app
+    trigger: true
+    passed: [ build ]
+  - put: docker
+    params:
+      build: app
+      build_args:
+        build
+
