@@ -13,7 +13,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(exclude = "id")
 public class Attendee {
-	
+
+	// comment	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
