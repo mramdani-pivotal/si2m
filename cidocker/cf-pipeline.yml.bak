@@ -1,15 +1,10 @@
 ---
 resources:
-- name: at-night
-  type: time
-  source:
-    start: 5:00 AM +0200
-    stop: 6:00 AM +0200
-
 - name: app
   type: git
   source:
     uri: https://github.com/avasseur-pivotal/pcf-ers-demo.git
+    branch: docker
 
 - name: cf
   type: cf
@@ -21,6 +16,20 @@ resources:
     space: {{cf-space}}
     skip_cert_check: true
 
+- name: docker
+  type: docker-image
+  source:
+    repository: avasseur/cfs
+    username: avasseur
+    password: {{docker-password}}
+
+#- name: git
+#  type: github-release
+#  source:
+#    user: avasseur-pivotal
+#    repository: pcf-ers-demo
+#    access_token: {{git-token}}
+
 jobs:
 - name: unit-test
   serial: true
@@ -29,43 +38,35 @@ jobs:
     - get: app
       trigger: true # TODO time based
     - task: unit
-      file: app/ci/tasks/unit.yml
+      file: app/cidocker/tasks/unit.yml
       params: &MAVENPARAMS
         MAVEN_OPTS: {{maven-opts}}
         MAVEN_CONFIG: {{maven-config}}
 
-- name: deploy
+- name: build
   serial: true
   public: true # cf does not shows auth. logs so it is ok
   plan:
-  - get: at-night
-    trigger: true
   - get: app
     trigger: true
     passed: [ unit-test ]
   - task: build
-    file: app/ci/tasks/build.yml
+    file: app/cidocker/tasks/build.yml
     params:
       <<: *MAVENPARAMS
-  - put: cf
-    params:
-      manifest: app/manifest.yml
-      path: build/pcf-ers-demo-1.0.jar
-      current_app_name: attendees-concourse
+#  - put: git
+#    params:
+#      name: build/gitname
+#      tag: build/gittag
+#      globs: build/*
 
-- name: deploy-v2
+- name: docker push
   serial: true
-  public: true # cf does not shows auth. logs so it is ok
+  public: true
   plan:
   - get: app
-    #trigger: true
-    #passed: [ unit-test ]
-  - task: build
-    file: app/ci/tasks/buildv2.yml
+    trigger: true
+    passed: [ build ]
+  - put: docker
     params:
-      <<: *MAVENPARAMS
-  - put: cf
-    params:
-      manifest: app/manifest-v2.yml
-      path: build/pcf-ers-demo-2.0.jar
-      current_app_name: attendees-concourse-v2
+      build: app/cidocker/release
