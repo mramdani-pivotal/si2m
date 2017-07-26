@@ -7,3 +7,6 @@ build/
 .project
 .springBeans
 credentials.yml
+/.apt_generated/
+.idea
+*.iml

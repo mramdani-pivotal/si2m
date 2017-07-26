@@ -18,8 +18,8 @@ public class Attendee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
-	@Column(nullable = false) 
+
+	@Column(nullable = false)
 	private String firstName;
 	
 	private String lastName;
@@ -29,6 +29,22 @@ public class Attendee {
 	private String zipCode;
 	private String phoneNumber;
 	private String emailAddress;
-		
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
 
 }

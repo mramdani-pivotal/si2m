@@ -9,6 +9,8 @@ ribbon:
 spring:
   application:
     name: attendees
+
+management.security.enabled: false
     
 # Using macros that are replaced by maven build
 info:
